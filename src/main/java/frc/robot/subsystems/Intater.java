@@ -57,6 +57,10 @@ public class Intater extends SubsystemBase {
     flywheelRightPIDController = m_flywheelRight.getPIDController();
     intakePIDController = m_intake.getPIDController();
 
+    flywheelLeftEncoder = m_flywheelLeft.getEncoder();
+    flywheelRightEncoder = m_flywheelRight.getEncoder();
+    intakeEncoder = m_intake.getEncoder();
+
     //PID Configs
     kP = 0; 
     kI = 0;
