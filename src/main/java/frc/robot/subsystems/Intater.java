@@ -4,24 +4,33 @@
 
 package frc.robot.subsystems;
 
+import java.util.concurrent.CancellationException;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkPIDController;
- import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.RelativeEncoder;
+
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intater extends SubsystemBase {
   /** Creates a new Intater. */
   private CANSparkMax m_flywheelLeft;
   private CANSparkMax m_flywheelRight;
+  private CANSparkMax m_intake;
   private RelativeEncoder flywheelLeftEncoder;
   private RelativeEncoder flywheelRightEncoder;
-  private SparkPIDController flywheelLeftPidController;
-  private SparkPIDController flywheelRightPidController;
+  private RelativeEncoder intakeEncoder;
+  private SparkPIDController flywheelLeftPIDController;
+  private SparkPIDController flywheelRightPIDController;
+  private SparkPIDController intakePIDController;
   public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
   
   public Intater() {
     m_flywheelLeft = new CANSparkMax(1, CANSparkMax.MotorType.kBrushless);
     m_flywheelRight = new CANSparkMax(2, CANSparkMax.MotorType.kBrushless);
+    m_intake = new CANSparkMax(0, CANSparkMax.MotorType.kBrushless);
   }
 
   private void configMotors(){
@@ -30,53 +39,67 @@ public class Intater extends SubsystemBase {
     m_flywheelLeft.restoreFactoryDefaults();
     m_flywheelLeft.setSmartCurrentLimit(20);
     m_flywheelLeft.setInverted(false);
-    m_flywheelLeft.setOpenLoopRampRate(0.25);
+    m_flywheelLeft.setIdleMode(IdleMode.kCoast);
 
     m_flywheelRight.restoreFactoryDefaults();
     m_flywheelRight.setSmartCurrentLimit(20);
     m_flywheelRight.setInverted(false);
-    m_flywheelRight.setOpenLoopRampRate(0.25);
+    m_flywheelRight.setIdleMode(IdleMode.kCoast);
+    
+
+    m_intake.restoreFactoryDefaults();
+    m_intake.setSmartCurrentLimit(20);
+    m_intake.setInverted(false);
+    m_intake.setIdleMode(IdleMode.kCoast);
 
     //Get PID Controller
-    flywheelLeftPidController = m_flywheelLeft.getPIDController();
-    flywheelRightPidController = m_flywheelRight.getPIDController();
+    flywheelLeftPIDController = m_flywheelLeft.getPIDController();
+    flywheelRightPIDController = m_flywheelRight.getPIDController();
+    intakePIDController = m_intake.getPIDController();
 
     //PID Configs
     kP = 0; 
     kI = 0;
     kD = 0; 
-    kIz = 0; 
     kFF = 0; 
     kMaxOutput = 0; 
     kMinOutput = 0;
 
-    flywheelLeftPidController.setP(kP);
-    flywheelLeftPidController.setI(kI);
-    flywheelLeftPidController.setD(kD);
-    flywheelLeftPidController.setIZone(kIz);
-    flywheelLeftPidController.setFF(kFF);
-    flywheelLeftPidController.setOutputRange(kMinOutput, kMaxOutput);
+    flywheelLeftPIDController.setP(kP);
+    flywheelLeftPIDController.setI(kI);
+    flywheelLeftPIDController.setD(kD);
+    flywheelLeftPIDController.setFF(kFF);
+    flywheelLeftPIDController.setOutputRange(kMinOutput, kMaxOutput);
 
-    flywheelRightPidController.setP(kP);
-    flywheelRightPidController.setI(kI);
-    flywheelRightPidController.setD(kD);
-    flywheelRightPidController.setIZone(kIz);
-    flywheelRightPidController.setFF(kFF);
-    flywheelRightPidController.setOutputRange(kMinOutput, kMaxOutput);
+    flywheelRightPIDController.setP(kP);
+    flywheelRightPIDController.setI(kI);
+    flywheelRightPIDController.setD(kD);
+    flywheelRightPIDController.setFF(kFF);
+    flywheelRightPIDController.setOutputRange(kMinOutput, kMaxOutput);
+
+    intakePIDController.setP(kP);
+    intakePIDController.setI(kI);
+    intakePIDController.setD(kD);
+    intakePIDController.setFF(kFF);
+    intakePIDController.setOutputRange(kMinOutput, kMaxOutput);
 
   }
 
   public void setLeftSpeed(double velocity){
-    flywheelLeftPidController.setReference(velocity, CANSparkMax.ControlType.kVelocity);
+    flywheelLeftPIDController.setReference(velocity, CANSparkMax.ControlType.kVelocity);
   }
 
   public void setRightSpeed(double velocity){
-    flywheelRightPidController.setReference(velocity, CANSparkMax.ControlType.kVelocity);
+    flywheelRightPIDController.setReference(velocity, CANSparkMax.ControlType.kVelocity);
   }
 
   public void setBothSpeed(double velocity){
-    flywheelRightPidController.setReference(velocity, CANSparkMax.ControlType.kVelocity);
-    flywheelLeftPidController.setReference(velocity, CANSparkMax.ControlType.kVelocity);
+    flywheelRightPIDController.setReference(velocity, CANSparkMax.ControlType.kVelocity);
+    flywheelLeftPIDController.setReference(velocity, CANSparkMax.ControlType.kVelocity);
+  }
+
+  public void setIntakeSpeed(double velocity){
+    intakePIDController.setReference(velocity, CANSparkMax.ControlType.kVelocity);
   }
 
   public double getLeftSpeed(){
@@ -85,6 +108,10 @@ public class Intater extends SubsystemBase {
 
   public double getRightSpeed(){
     return flywheelRightEncoder.getVelocity();
+  }
+
+  public double getIntakeSpeed(){
+    return intakeEncoder.getVelocity();
   }
 
   @Override
