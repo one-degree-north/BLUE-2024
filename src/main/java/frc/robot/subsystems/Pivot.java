@@ -15,8 +15,8 @@ public class Pivot extends SubsystemBase {
 
   private CANSparkMax m_pivotLead;
   private CANSparkMax m_pivotFollow;
-  private SparkPIDController m_pivotPIDController;
-  private RelativeEncoder m_pivotEncoder;
+  private SparkPIDController pivotPIDController;
+  private RelativeEncoder pivotEncoder;
   public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
 
   public Pivot() {
@@ -38,8 +38,8 @@ public class Pivot extends SubsystemBase {
     m_pivotLead.setIdleMode(CANSparkMax.IdleMode.kCoast);
 
     //Get PID Controller and Encoder
-    m_pivotPIDController = m_pivotLead.getPIDController();
-    m_pivotEncoder = m_pivotLead.getEncoder();
+    pivotPIDController = m_pivotLead.getPIDController();
+    pivotEncoder = m_pivotLead.getEncoder();
 
     //PID Controller Config
     kP = 0; 
@@ -50,25 +50,25 @@ public class Pivot extends SubsystemBase {
     kMaxOutput = 0; 
     kMinOutput = 0;
 
-    m_pivotPIDController.setP(kP);
-    m_pivotPIDController.setI(kI);
-    m_pivotPIDController.setD(kD);
-    m_pivotPIDController.setIZone(kIz);
-    m_pivotPIDController.setFF(kFF);
-    m_pivotPIDController.setOutputRange(kMinOutput, kMaxOutput);
+    pivotPIDController.setP(kP);
+    pivotPIDController.setI(kI);
+    pivotPIDController.setD(kD);
+    pivotPIDController.setIZone(kIz);
+    pivotPIDController.setFF(kFF);
+    pivotPIDController.setOutputRange(kMinOutput, kMaxOutput);
 
   }
 
   public void setPivot(double setpoint){
-    m_pivotPIDController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
+    pivotPIDController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
   }
 
   public double getMotorPos(){
-    return m_pivotEncoder.getPosition();
+    return pivotEncoder.getPosition();
   }
 
   public double getMotorVel(){
-    return m_pivotEncoder.getVelocity();
+    return pivotEncoder.getVelocity();
   }
 
   @Override
