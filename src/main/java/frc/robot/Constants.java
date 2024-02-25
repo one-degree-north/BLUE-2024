@@ -13,7 +13,58 @@ import frc.lib.util.COTSTalonFXSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
 
 public final class Constants {
-    public static final double stickDeadband = 0.1;
+    
+    public static final class StickConstants {
+        public static final double deadband = 0.1;     
+    }
+
+    public static final class IntaterConstants {
+        //CAN ID
+        public static final int flywheelLeftID = 0;
+        public static final int flywheelRightID = 0;
+        public static final int intakeID = 0;
+        public static final int intakeSensorID = 0;
+
+        //PID VALUES
+        public static final double FlywheelLeftkP = 0;
+        public static final double FlywheelLeftkI = 0;
+        public static final double FlywheelLeftkD = 0;
+        public static final double FlywheelLeftkFF = 0;
+        public static final double FlywheelLeftkMaxOutput = 0;
+        public static final double FlywheelLeftkMinOutput = 0;
+
+        public static final double FlywheelRightkP = 0;
+        public static final double FlywheelRightkI = 0;
+        public static final double FlywheelRightkD = 0;
+        public static final double FlywheelRightkFF = 0;
+        public static final double FlywheelRightkMaxOutput = 0;
+        public static final double FlywheelRightkMinOutput = 0;
+
+        public static final double IntakekP = 0;
+        public static final double IntakekI = 0;
+        public static final double IntakekD = 0;
+        public static final double IntakekFF = 0;
+        public static final double IntakekMaxOutput = 0;
+        public static final double IntakekMinOutput = 0;
+    }
+
+    public static final class PivotConstants {
+        //CAN ID
+        public static final int pivotLeadID = 0;
+        public static final int pivotFollowID = 0;
+
+        //PID VALUES
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
+        public static final double kFF = 0;
+        public static final double kMaxOutput = 0;
+        public static final double kMinOutput = 0;
+
+        //CONVERSION FACTOR (GEAR RATIO)
+        public static final double PosConversionFactor = 0;
+        public static final double VelConversionFactor = 0;
+    }
 
     public static final class Swerve {
 

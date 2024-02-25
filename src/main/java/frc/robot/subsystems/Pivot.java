@@ -5,24 +5,29 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Pivot extends SubsystemBase {
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.PivotConstants;
+
+public class Pivot extends SubsystemBase {  
   /** Creates a new Pivot. */
 
   private CANSparkMax m_pivotLead;
   private CANSparkMax m_pivotFollow;
   private SparkPIDController pivotPIDController;
-  private RelativeEncoder pivotEncoder;
-  public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
+  private AbsoluteEncoder pivotEncoder;
+  private double pivotOffset;
+  private Boolean encodersAreReset;
 
   public Pivot() {
 
-    m_pivotLead = new CANSparkMax(0, MotorType.kBrushless);
-    m_pivotFollow = new CANSparkMax(0, MotorType.kBrushless);
+    m_pivotLead = new CANSparkMax(PivotConstants.pivotLeadID, MotorType.kBrushless);
+    m_pivotFollow = new CANSparkMax(PivotConstants.pivotFollowID, MotorType.kBrushless);
+    configMotors();
 
   }
 
@@ -39,41 +44,52 @@ public class Pivot extends SubsystemBase {
 
     //Get PID Controller and Encoder
     pivotPIDController = m_pivotLead.getPIDController();
-    pivotEncoder = m_pivotLead.getEncoder();
+    pivotEncoder.setPositionConversionFactor(PivotConstants.PosConversionFactor);
+    pivotEncoder.setVelocityConversionFactor(PivotConstants.VelConversionFactor);
 
     //PID Controller Config
-    kP = 0; 
-    kI = 0;
-    kD = 0; 
-    kIz = 0; 
-    kFF = 0; 
-    kMaxOutput = 0; 
-    kMinOutput = 0;
-
-    pivotPIDController.setP(kP);
-    pivotPIDController.setI(kI);
-    pivotPIDController.setD(kD);
-    pivotPIDController.setIZone(kIz);
-    pivotPIDController.setFF(kFF);
-    pivotPIDController.setOutputRange(kMinOutput, kMaxOutput);
+    pivotPIDController.setP(PivotConstants.kP);
+    pivotPIDController.setI(PivotConstants.kI);
+    pivotPIDController.setD(PivotConstants.kD);
+    pivotPIDController.setFF(PivotConstants.kFF);
+    pivotPIDController.setOutputRange(PivotConstants.kMinOutput, PivotConstants.kMaxOutput);
 
   }
 
-  public void setPivot(double setpoint){
+  //Methods
+  public void resetMotorToAbsolute(){
+    double offsetPivotPos = pivotEncoder.getPosition() - pivotOffset;
+    if (encodersAreReset == false) { 
+      m_pivotLead.getEncoder().setPosition(offsetPivotPos);
+      encodersAreReset = true;
+    } 
+
+    else {
+      encodersAreReset = false;
+    }
+  }
+
+  public void setPivotPos(double setpoint){
     pivotPIDController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
   }
 
-  public double getMotorPos(){
+  public void zeroPivot(){
+    m_pivotLead.getEncoder().setPosition(0);
+  }
+
+  public double getPivotPos(){
     return pivotEncoder.getPosition();
   }
 
-  public double getMotorVel(){
+  public double getPivotRPS(){
     return pivotEncoder.getVelocity();
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
 
+    SmartDashboard.putNumber("PivotRPS", getPivotPos());
+    SmartDashboard.putNumber("PivotPos", getPivotRPS());  
   }
+  
 }
