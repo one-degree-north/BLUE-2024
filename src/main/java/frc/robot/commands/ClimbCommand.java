@@ -7,7 +7,6 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.ClimbConstants;
-import frc.robot.Constants.PivotConstants;
 import frc.robot.subsystems.Climb;
 
 public class ClimbCommand extends Command {
@@ -32,7 +31,7 @@ public class ClimbCommand extends Command {
   public void initialize() {
     switch (m_mode) {
       case CLIMB_UP:
-        m_commandToRun = new InstantCommand(() -> s_Climb.setBothPos(ClimbConstants.ClimbUpPosition));
+      m_commandToRun = new InstantCommand(() -> s_Climb.setBothPos(ClimbConstants.ClimbUpPosition));
         break;
 
       case CLIMB_DOWN:
