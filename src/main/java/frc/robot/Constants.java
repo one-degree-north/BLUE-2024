@@ -78,6 +78,29 @@ public final class Constants {
         public static final double GroundIntakePosition = 0;
         public static final double SourceIntakePosition = 0;
     }
+    
+    public static final class ClimbConstants {
+        //CAN ID
+        public static final int climbMotorLeftID = 0;
+        public static final int climbMotorRightID = 0;
+        public static final int climbLeftEncoderID = 0;
+        public static final int climbRightEncoderID = 0;
+
+        //PID VALUES
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
+        public static final double kFF = 0;
+        public static final double kMaxOutput = 0;
+        public static final double kMinOutput = 0;
+
+        //POSITIONS
+        public static final double ClimbUpPosition = 0;
+        public static final double ClimbDownPosition = 0;
+
+        //CLIMB OFFSET
+        public static final double climbOffset = 0;
+    }
 
     public static final class SwerveConstants {
 

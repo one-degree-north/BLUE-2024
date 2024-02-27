@@ -5,11 +5,14 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Climb extends SubsystemBase {
   /** Creates a new Climb. */
@@ -25,11 +28,11 @@ public class Climb extends SubsystemBase {
   private double count;
 
   public Climb() {
-    m_climbLeft = new CANSparkMax(0, MotorType.kBrushless);
-    m_climbRight = new CANSparkMax(0, MotorType.kBrushless);
-    climbLeftEncoder = new DutyCycleEncoder(0);
-    climbRightEncoder = new DutyCycleEncoder(0);
-    climbOffset = 0;
+    m_climbLeft = new CANSparkMax(Constants.ClimbConstants.climbMotorLeftID, MotorType.kBrushless);
+    m_climbRight = new CANSparkMax(Constants.ClimbConstants.climbMotorRightID, MotorType.kBrushless);
+    climbLeftEncoder = new DutyCycleEncoder(Constants.ClimbConstants.climbLeftEncoderID);
+    climbRightEncoder = new DutyCycleEncoder(Constants.ClimbConstants.climbRightEncoderID);
+    climbOffset = Constants.ClimbConstants.climbOffset;
   }
 
   public void configMotors(){
@@ -50,13 +53,12 @@ public class Climb extends SubsystemBase {
     climbRightPIDController = m_climbRight.getPIDController();
 
     //PID Constants
-    kP = 0; 
-    kI = 0;
-    kD = 0; 
-    kIz = 0; 
-    kFF = 0; 
-    kMaxOutput = 0; 
-    kMinOutput = 0;
+    kP = Constants.ClimbConstants.kP; 
+    kI = Constants.ClimbConstants.kI;
+    kD = Constants.ClimbConstants.kD;
+    kFF = Constants.ClimbConstants.kFF; 
+    kMaxOutput = Constants.ClimbConstants.kMaxOutput; 
+    kMinOutput = Constants.ClimbConstants.kMinOutput;
 
   }
 
@@ -76,15 +78,15 @@ public class Climb extends SubsystemBase {
     
   }
 
-  public void setLeftClimb(double speed){
+  public void setLeftClimbPos(double setpoint){
     if (encodersAreReset) {
-      climbLeftPIDController.setReference(speed, CANSparkMax.ControlType.kSmartVelocity);
+      climbLeftPIDController.setReference(setpoint, CANSparkMax.ControlType.kSmartMotion);
     }
   }
 
-  public void setRightClimb(double speed){
+  public void setRightClimbPos(double setpoint){
     if (encodersAreReset) {
-      climbRightPIDController.setReference(speed, CANSparkMax.ControlType.kSmartVelocity);
+      climbRightPIDController.setReference(setpoint, CANSparkMax.ControlType.kSmartMotion);
     }
   }
 
@@ -95,15 +97,43 @@ public class Climb extends SubsystemBase {
   public double getRightClimbPos(){
     return m_climbRight.getEncoder().getPosition();
   }
+  
+  public double getLeftClimbVel(){
+    return m_climbLeft.getEncoder().getVelocity();
+  }
+
+  public double getRightClimbVel(){
+    return m_climbRight.getEncoder().getVelocity();
+  }
+
+  public void setBothPos(double setpoint){
+    if (encodersAreReset){
+      climbLeftPIDController.setReference(setpoint, CANSparkMax.ControlType.kSmartMotion);
+      climbRightPIDController.setReference(setpoint, CANSparkMax.ControlType.kSmartMotion);
+
+    }
+  }
+
+  public void stopClimb(){
+    m_climbLeft.stopMotor();
+    m_climbRight.stopMotor();
+  }
+
+
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    if (encodersAreReset && count <= 0) {
+    if (!encodersAreReset && count <= 0) {
       resetMotorToAbsolute();
     } else {
       count += 1;
       count %= 5;
     }
+
+    SmartDashboard.putNumber("LeftClimbPos", getLeftClimbPos());
+    SmartDashboard.putNumber("RightClimbPos", getRightClimbPos());
+    SmartDashboard.putNumber("LeftClimbVel", getLeftClimbVel());
+    SmartDashboard.putNumber("RightClimbVel", getRightClimbVel());
   }
 }
