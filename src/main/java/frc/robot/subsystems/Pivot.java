@@ -85,6 +85,10 @@ public class Pivot extends SubsystemBase {
     return pivotEncoder.getVelocity();
   }
 
+  public void stopAll(){
+    m_pivotLead.stopMotor();
+  }
+
   @Override
   public void periodic() {
 
