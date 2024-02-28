@@ -63,19 +63,24 @@ public final class Constants {
         public static final double kP = 0;
         public static final double kI = 0;
         public static final double kD = 0;
-        public static final double kFF = 0;
-        public static final double kMaxOutput = 0;
-        public static final double kMinOutput = 0;
+        public static final double kA = 0;
+        public static final double kV = 0;
+        public static final double kS = 0;
+        public static final double kG = 0;
 
         //CONVERSION FACTOR (GEAR RATIO)
         public static final double PosConversionFactor = 0;
         public static final double VelConversionFactor = 0;
+
+        //CONFIG
+        public static final double PivotOpenLoopRampRate = 0;
 
         //POSITIONS
         public static final double SpeakerPosition = 0;
         public static final double AmpPosition = 0;
         public static final double GroundIntakePosition = 0;
         public static final double SourceIntakePosition = 0;
+        public static final double LevelPosition = 0;
     }
     
     public static final class ClimbConstants {

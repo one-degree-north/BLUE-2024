@@ -12,6 +12,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.units.Current;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -31,7 +32,6 @@ public class Climb extends SubsystemBase {
   private double climbOffset;
   private Boolean encodersAreReset;
   private double count;
-  public enum ClimbMode {PID, DUTYCYCLE}
   public ClimbMode ClimbMode;
 
   public Climb() {
@@ -42,6 +42,7 @@ public class Climb extends SubsystemBase {
     climbOffset = Constants.ClimbConstants.climbOffset;
     climbLeftPIDController = new ProfiledPIDController(kP, kI, kD, null);
     climbRightPIDController = new ProfiledPIDController(kP, kI, kD, null);
+    ClimbMode = ClimbMode.PID;
     configMotors();
     resetMotorToAbsolute();
   }
@@ -69,11 +70,9 @@ public class Climb extends SubsystemBase {
     kI = Constants.ClimbConstants.kI;
     kD = Constants.ClimbConstants.kD;
 
-
     //Get PID
-    climbLeftFFController = new ElevatorFeedforward(kA, kV, kS, kG);
-    climbRightFFController = new ElevatorFeedforward(kA, kV, kS, kG);
-
+    climbLeftFFController = new ElevatorFeedforward(kS, kG, kV, kA);
+    climbRightFFController = new ElevatorFeedforward(kS, kG, kV, kA);
 
   }
 
@@ -127,9 +126,26 @@ public class Climb extends SubsystemBase {
     }
   }
 
+  public void toggleClimbMode(){
+    ClimbMode = ClimbMode.toggle();
+  }
+
   public void stopClimb(){
     m_climbLeft.stopMotor();
     m_climbRight.stopMotor();
+  }
+
+
+  public enum ClimbMode {
+    PID, DUTYCYCLE;
+
+    ClimbMode toggle(){
+      if (this == PID){
+        return DUTYCYCLE;
+      } else {
+        return PID;
+      }
+    }
   }
 
   @Override
@@ -146,6 +162,7 @@ public class Climb extends SubsystemBase {
     SmartDashboard.putNumber("RightClimbPos", getRightClimbPos());
     SmartDashboard.putNumber("LeftClimbVel", getLeftClimbVel());
     SmartDashboard.putNumber("RightClimbVel", getRightClimbVel());
+    SmartDashboard.putString("ClimbMode", ClimbMode.toString());
 
     switch(ClimbMode){
       case PID:

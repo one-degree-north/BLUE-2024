@@ -26,9 +26,9 @@ public class RobotContainer {
     private final PS5Controller driver = new PS5Controller(Constants.StickConstants.stickID);
 
     /* Drive Controls */
-    private final int translationAxis = XboxController.Axis.kLeftY.value;
-    private final int strafeAxis = XboxController.Axis.kLeftX.value;
-    private final int rotationAxis = XboxController.Axis.kRightX.value;
+    private final int translationAxis = PS5Controller.Axis.kLeftY.value;
+    private final int strafeAxis = PS5Controller.Axis.kLeftX.value;
+    private final int rotationAxis = PS5Controller.Axis.kRightX.value;
 
     /* Driver Buttons */
     private final JoystickButton zeroGyro = new JoystickButton(driver, PS5Controller.Button.kCircle.value);

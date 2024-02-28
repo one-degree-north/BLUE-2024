@@ -7,10 +7,11 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkPIDController;
-
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.PivotConstants;
 
 public class Pivot extends SubsystemBase {  
@@ -18,15 +19,20 @@ public class Pivot extends SubsystemBase {
 
   private CANSparkMax m_pivotLead;
   private CANSparkMax m_pivotFollow;
-  private SparkPIDController pivotPIDController;
   private AbsoluteEncoder pivotEncoder;
   private double pivotOffset;
   private Boolean encodersAreReset;
+  private double kP, kI, kD;
+  private double kA, kG, kS, kV;
+  private ProfiledPIDController pivotPIDController;
+  private ArmFeedforward pivotFFController;
 
   public Pivot() {
 
     m_pivotLead = new CANSparkMax(PivotConstants.pivotLeadID, MotorType.kBrushless);
     m_pivotFollow = new CANSparkMax(PivotConstants.pivotFollowID, MotorType.kBrushless);
+    pivotPIDController = new ProfiledPIDController(kP, kI, kD, null);
+
     configMotors();
 
   }
@@ -39,21 +45,27 @@ public class Pivot extends SubsystemBase {
     m_pivotLead.restoreFactoryDefaults();
     m_pivotLead.setSmartCurrentLimit(20);
     m_pivotLead.setInverted(false);
-    m_pivotLead.setOpenLoopRampRate(0);
+    m_pivotLead.setOpenLoopRampRate(Constants.PivotConstants.PivotOpenLoopRampRate);
     m_pivotLead.setIdleMode(CANSparkMax.IdleMode.kCoast);
 
-    //Get PID Controller and Encoder
-    pivotPIDController = m_pivotLead.getPIDController();
-    pivotEncoder.setPositionConversionFactor(PivotConstants.PosConversionFactor);
-    pivotEncoder.setVelocityConversionFactor(PivotConstants.VelConversionFactor);
+    m_pivotFollow.restoreFactoryDefaults();
+    m_pivotFollow.setSmartCurrentLimit(20);
+    m_pivotFollow.setInverted(false);
+    m_pivotFollow.setOpenLoopRampRate(Constants.PivotConstants.PivotOpenLoopRampRate);
+    m_pivotFollow.setIdleMode(CANSparkMax.IdleMode.kCoast);
+
+    //Get PID Values
+    kA = Constants.PivotConstants.kA; 
+    kV = Constants.PivotConstants.kV;
+    kS = Constants.PivotConstants.kS;
+    kG = Constants.PivotConstants.kG;
+
+    kP = Constants.PivotConstants.kP;
+    kI = Constants.PivotConstants.kI;
+    kD = Constants.PivotConstants.kD;
 
     //PID Controller Config
-    pivotPIDController.setP(PivotConstants.kP);
-    pivotPIDController.setI(PivotConstants.kI);
-    pivotPIDController.setD(PivotConstants.kD);
-    pivotPIDController.setFF(PivotConstants.kFF);
-    pivotPIDController.setOutputRange(PivotConstants.kMinOutput, PivotConstants.kMaxOutput);
-
+    pivotFFController = new ArmFeedforward(kS, kG, kV, kA);
   }
 
   //Methods
@@ -70,23 +82,24 @@ public class Pivot extends SubsystemBase {
   }
 
   public void setPivotPos(double setpoint){
-    pivotPIDController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
+    pivotPIDController.setGoal(setpoint);
   }
 
-  public void zeroPivot(){
-    m_pivotLead.getEncoder().setPosition(0);
+  public void levelPivot(){
+    pivotPIDController.setGoal(PivotConstants.LevelPosition);
   }
 
   public double getPivotPos(){
-    return pivotEncoder.getPosition();
+    return m_pivotLead.getEncoder().getPosition();
   }
 
   public double getPivotRPS(){
-    return pivotEncoder.getVelocity();
+    return m_pivotLead.getEncoder().getVelocity();
   }
 
   public void stopAll(){
     m_pivotLead.stopMotor();
+    m_pivotFollow.stopMotor();
   }
 
   @Override
@@ -94,6 +107,16 @@ public class Pivot extends SubsystemBase {
 
     SmartDashboard.putNumber("PivotRPS", getPivotPos());
     SmartDashboard.putNumber("PivotPos", getPivotRPS());  
+
+    m_pivotLead.setVoltage(
+      pivotPIDController.calculate(getPivotPos())
+          +
+          pivotFFController.calculate(
+          pivotPIDController.getSetpoint().position,
+          pivotPIDController.getSetpoint().velocity
+          )
+
+    );
   }
   
 }
