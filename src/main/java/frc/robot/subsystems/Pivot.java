@@ -9,6 +9,7 @@ import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -24,6 +25,7 @@ public class Pivot extends SubsystemBase {
   private Boolean encodersAreReset;
   private double kP, kI, kD;
   private double kA, kG, kS, kV;
+  private double maxVel, maxAccel;
   private ProfiledPIDController pivotPIDController;
   private ArmFeedforward pivotFFController;
 
@@ -31,9 +33,10 @@ public class Pivot extends SubsystemBase {
 
     m_pivotLead = new CANSparkMax(PivotConstants.pivotLeadID, MotorType.kBrushless);
     m_pivotFollow = new CANSparkMax(PivotConstants.pivotFollowID, MotorType.kBrushless);
-    pivotPIDController = new ProfiledPIDController(kP, kI, kD, null);
+    pivotPIDController = new ProfiledPIDController(kP, kI, kD, new TrapezoidProfile.Constraints(maxVel, maxAccel));
 
     configMotors();
+    pivotPIDController.setTolerance(PivotConstants.PivotTolerance);
 
   }
 
@@ -50,10 +53,10 @@ public class Pivot extends SubsystemBase {
 
     m_pivotFollow.restoreFactoryDefaults();
     m_pivotFollow.setSmartCurrentLimit(20);
-    m_pivotFollow.setInverted(false);
+    m_pivotFollow.setInverted(true);
     m_pivotFollow.setOpenLoopRampRate(Constants.PivotConstants.PivotOpenLoopRampRate);
     m_pivotFollow.setIdleMode(CANSparkMax.IdleMode.kCoast);
-
+    
     //Get PID Values
     kA = Constants.PivotConstants.kA; 
     kV = Constants.PivotConstants.kV;
@@ -75,7 +78,6 @@ public class Pivot extends SubsystemBase {
       m_pivotLead.getEncoder().setPosition(offsetPivotPos);
       encodersAreReset = true;
     } 
-
     else {
       encodersAreReset = false;
     }

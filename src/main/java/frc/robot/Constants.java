@@ -67,13 +67,12 @@ public final class Constants {
         public static final double kV = 0;
         public static final double kS = 0;
         public static final double kG = 0;
-
-        //CONVERSION FACTOR (GEAR RATIO)
-        public static final double PosConversionFactor = 0;
-        public static final double VelConversionFactor = 0;
+        public static final double maxVel = 0;
+        public static final double maxAccel = 0;
 
         //CONFIG
         public static final double PivotOpenLoopRampRate = 0;
+        public static final double PivotTolerance = 0;
 
         //POSITIONS
         public static final double SpeakerPosition = 0;
