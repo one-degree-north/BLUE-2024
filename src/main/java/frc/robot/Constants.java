@@ -22,7 +22,7 @@ public final class Constants {
         //CAN ID
         public static final int flywheelLeftID = 0;
         public static final int flywheelRightID = 0;
-        public static final int intakeID = 0;
+        public static final int intakeID = 13;
         public static final int intakeSensorID = 0;
 
         //PID VALUES
@@ -40,10 +40,11 @@ public final class Constants {
         public static final double FlywheelRightkMaxOutput = 0;
         public static final double FlywheelRightkMinOutput = 0;
 
+        public static final double flywheelGearRatio = 1;
+
         public static final double IntakekP = 0;
         public static final double IntakekI = 0;
         public static final double IntakekD = 0;
-        public static final double IntakekFF = 0;
         public static final double IntakekMaxOutput = 0;
         public static final double IntakekMinOutput = 0;
 

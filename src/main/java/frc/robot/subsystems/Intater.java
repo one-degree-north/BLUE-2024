@@ -9,7 +9,6 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import frc.robot.Constants.IntaterConstants;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -24,13 +23,11 @@ public class Intater extends SubsystemBase {
   private SparkPIDController flywheelLeftPIDController;
   private SparkPIDController flywheelRightPIDController;
   private SparkPIDController intakePIDController;
-  private DigitalInput intakeSensor;
   
   public Intater() {
     m_flywheelLeft = new CANSparkMax(IntaterConstants.flywheelLeftID, CANSparkMax.MotorType.kBrushless);
     m_flywheelRight = new CANSparkMax(IntaterConstants.flywheelRightID, CANSparkMax.MotorType.kBrushless);
     m_intake = new CANSparkMax(IntaterConstants.intakeID, CANSparkMax.MotorType.kBrushless);
-    intakeSensor = new DigitalInput(IntaterConstants.intakeSensorID);
     configMotors();
   }
 
@@ -38,12 +35,12 @@ public class Intater extends SubsystemBase {
 
     //NEO 500 Configs
     m_flywheelLeft.restoreFactoryDefaults();
-    m_flywheelLeft.setSmartCurrentLimit(20);
+    m_flywheelLeft.setSmartCurrentLimit(35);
     m_flywheelLeft.setInverted(false);
     m_flywheelLeft.setIdleMode(IdleMode.kCoast);
 
     m_flywheelRight.restoreFactoryDefaults();
-    m_flywheelRight.setSmartCurrentLimit(20);
+    m_flywheelRight.setSmartCurrentLimit(35);
     m_flywheelRight.setInverted(false);
     m_flywheelRight.setIdleMode(IdleMode.kCoast);
     
@@ -62,6 +59,11 @@ public class Intater extends SubsystemBase {
     flywheelRightEncoder = m_flywheelRight.getEncoder();
     intakeEncoder = m_intake.getEncoder();
 
+    flywheelLeftEncoder.setPositionConversionFactor(1.0/IntaterConstants.flywheelGearRatio);
+    flywheelLeftEncoder.setVelocityConversionFactor((1.0/IntaterConstants.flywheelGearRatio) * (1.0/60.0) );
+    flywheelRightEncoder.setPositionConversionFactor(1.0/IntaterConstants.flywheelGearRatio);
+    flywheelRightEncoder.setVelocityConversionFactor((1.0/IntaterConstants.flywheelGearRatio) * (1.0/60.0) );
+
     //PID Configs
     flywheelLeftPIDController.setP(IntaterConstants.FlywheelLeftkP);
     flywheelLeftPIDController.setI(IntaterConstants.FlywheelLeftkI);
@@ -78,7 +80,6 @@ public class Intater extends SubsystemBase {
     intakePIDController.setP(IntaterConstants.IntakekP);
     intakePIDController.setI(IntaterConstants.IntakekI);
     intakePIDController.setD(IntaterConstants.IntakekD);
-    intakePIDController.setFF(IntaterConstants.IntakekFF);
     intakePIDController.setOutputRange(IntaterConstants.IntakekMinOutput, IntaterConstants.IntakekMaxOutput);
   }
 
@@ -132,15 +133,11 @@ public class Intater extends SubsystemBase {
   }
 
   public double getLeftPercentSpeed(){
-    return m_flywheelLeft.get();
+    return (m_flywheelLeft.get()*100);
   }
 
   public double getRightPercentSpeed(){
-    return m_flywheelRight.get();
-  }
-
-  public boolean isNoteIntaked() {
-    return intakeSensor.get();
+    return (m_flywheelRight.get()*100);
   }
 
   @Override
@@ -149,7 +146,6 @@ public class Intater extends SubsystemBase {
     SmartDashboard.putNumber("Intake RPS", getIntakeSpeedRPS());
     SmartDashboard.putNumber("Left Shooter RPS", getLeftSpeedRPS());
     SmartDashboard.putNumber("Right Shooter RPS", getRightSpeedRPS());
-    SmartDashboard.putBoolean("NoteIntaked", isNoteIntaked());
   }
   
 }
