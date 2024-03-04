@@ -37,19 +37,24 @@ public class Pivot extends SubsystemBase {
     pivotEncoder = new DutyCycleEncoder(PivotConstants.throughBoreID);
     pivotPIDController.setTolerance(PivotConstants.PivotTolerance);
     configMotors();
+    resetMotorToAbsolute();
 
   }
 
   private void configMotors(){
+    pivotOffset = 0.717;
 
     m_pivotFollow.follow(m_pivotLead);
 
-    //Neo 550 Conifg
+    //Neo Conifg
     m_pivotLead.restoreFactoryDefaults();
     m_pivotLead.setSmartCurrentLimit(20);
     m_pivotLead.setInverted(false);
     m_pivotLead.setOpenLoopRampRate(Constants.PivotConstants.PivotOpenLoopRampRate);
     m_pivotLead.setIdleMode(CANSparkMax.IdleMode.kCoast);
+    m_pivotLead.getEncoder().setPositionConversionFactor(1.0/PivotConstants.pivotGearRatio);
+    m_pivotLead.getEncoder().setVelocityConversionFactor(
+      (1.0/PivotConstants.pivotGearRatio)*(1.0/60.0));
 
     m_pivotFollow.restoreFactoryDefaults();
     m_pivotFollow.setSmartCurrentLimit(20);
@@ -74,13 +79,7 @@ public class Pivot extends SubsystemBase {
   //Methods
   public void resetMotorToAbsolute(){
     double offsetPivotPos = pivotEncoder.getAbsolutePosition() - pivotOffset;
-    if (encodersAreReset == false) { 
       m_pivotLead.getEncoder().setPosition(offsetPivotPos);
-      encodersAreReset = true;
-    } 
-    else {
-      encodersAreReset = false;
-    }
   }
 
   public void setPivotPos(double setpoint){
@@ -107,17 +106,17 @@ public class Pivot extends SubsystemBase {
   @Override
   public void periodic() {
 
-    SmartDashboard.putNumber("PivotRPS", getPivotPos());
-    SmartDashboard.putNumber("PivotPos", getPivotRPS());  
+    SmartDashboard.putNumber("PivotRPS", getPivotRPS());
+    SmartDashboard.putNumber("PivotPos", getPivotPos());  
     SmartDashboard.putNumber("EncoderPos", pivotEncoder.getAbsolutePosition());
 
     m_pivotLead.setVoltage(
       pivotPIDController.calculate(getPivotPos())
-          +
-          pivotFFController.calculate(
-          pivotPIDController.getSetpoint().position,
-          pivotPIDController.getSetpoint().velocity
-          )
+          // +
+          // pivotFFController.calculate(
+          // pivotPIDController.getSetpoint().position,
+          // pivotPIDController.getSetpoint().velocity
+          // )
     );
   }
   

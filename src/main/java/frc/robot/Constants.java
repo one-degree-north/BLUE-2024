@@ -59,6 +59,7 @@ public final class Constants {
         public static final int pivotLeadID = 16;
         public static final int pivotFollowID = 17;
         public static final int throughBoreID = 0;
+        public static final double pivotGearRatio = 80.0/1.0;
 
         //PID VALUES
         public static final double kP = 0;

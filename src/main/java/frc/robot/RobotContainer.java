@@ -23,29 +23,13 @@ import frc.robot.subsystems.*;
  */
 public class RobotContainer {
     /* Controllers */
-    private final CommandPS5Controller driver = new CommandPS5Controller(Constants.StickConstants.stickID);
+    private final CommandPS5Controller mainController = new CommandPS5Controller(Constants.StickConstants.stickID);
 
     /* Drive Controls */
     private final int translationAxis =
      PS5Controller.Axis.kLeftY.value;
     private final int strafeAxis = PS5Controller.Axis.kLeftX.value;
     private final int rotationAxis = PS5Controller.Axis.kRightX.value;
-
-    /* Driver Buttons */
-    // private final JoystickButton zeroGyro = new JoystickButton(driver, PS5Controller.Button.kCircle.value);
-    // private final JoystickButton robotCentric = new JoystickButton(driver, PS5Controller.Button.kTriangle.value);
-
-    // private final JoystickButton shootSpeaker = new JoystickButton(driver, PS5Controller.Button.kR2.value);
-    // private final JoystickButton shootAmp = new JoystickButton(driver, PS5Controller.Button.kR1.value);
-
-    // private final JoystickButton intakeGround = new JoystickButton(driver, PS5Controller.Button.kL1.value);
-    // private final JoystickButton intakeSource = new JoystickButton(driver, PS5Controller.Button.kL2.value);
-
-    // private final JoystickButton stopAll = new JoystickButton(driver, PS5Controller.Button.kCross.value);
-    
-    driver.cross(
-        new IntaterCommand()
-    ).whileTrue();
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
@@ -55,15 +39,15 @@ public class RobotContainer {
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-        s_Swerve.setDefaultCommand(
-            new TeleopSwerve(
-                s_Swerve, 
-                () -> -driver.getRawAxis(translationAxis), 
-                () -> -driver.getRawAxis(strafeAxis), 
-                () -> -driver.getRawAxis(rotationAxis), 
-                () -> robotCentric.getAsBoolean()
-            )
-        );
+        // s_Swerve.setDefaultCommand(
+        //     new TeleopSwerve(
+        //         s_Swerve, 
+        //         () -> -mainController.getLeftY(),
+        //         () -> -mainController.getLeftX(),
+        //         () -> -mainController.getRightX(),
+        //         () -> false
+        //     )
+        // );
 
         // Configure the button bindings
         configureButtonBindings();
@@ -76,52 +60,48 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
+        mainController.triangle().onTrue(new PivotCommand(PivotMode.SPEAKER, s_Pivot, false));
+
+            
         /* Driver Buttons */
-        // zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
+        // mainController.circle().onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
 
-        // shootSpeaker.whileTrue(
-        //     Commands.sequence(
-        //         new PivotCommand(PivotMode.SPEAKER, s_Pivot, true),
-        //         new IntaterCommand(IntaterMode.SPEAKERSHOOT, s_Intater, true)
-        //     )
-        // );
-
-        // shootSpeaker.whileTrue(
+        // mainController.R2().whileTrue(
         //     Commands.sequence(
         //     new PivotCommand(PivotMode.LEVEL, s_Pivot, true),
         //     new IntaterCommand(IntaterMode.SPEAKERSHOOT, s_Intater, true)
         //     )
         // );
 
-        // shootAmp.whileTrue(
+        // mainController.R1().whileTrue(
         //     Commands.sequence(
         //         new PivotCommand(PivotMode.AMP, s_Pivot, true),
         //         new IntaterCommand(IntaterMode.AMPSHOOT,s_Intater,true)
         //     )
         // );
 
-        // intakeGround.whileTrue(
+        // mainController.L2().whileTrue(
         //     Commands.sequence(
         //         new PivotCommand(PivotMode.GROUND_INTAKE, s_Pivot, true),
         //         new IntaterCommand(IntaterMode.INTAKE, s_Intater, true)
         //     )
         // );
 
-        // intakeSource.whileTrue(
+        // mainController.L1().whileTrue(
         //     Commands.sequence(
         //         new PivotCommand(PivotMode.SOURCE_INTAKE, s_Pivot, true),
         //         new IntaterCommand(IntaterMode.OUTTAKE, s_Intater, true)
         //     )
         // );
 
-        // stopAll.onTrue(
+        // mainController.triangle().onTrue(
         //     Commands.parallel(
         //         new IntaterCommand(IntaterMode.STOP, s_Intater, true),
         //         new PivotCommand(PivotMode.STOP, s_Pivot, true)    
         //     )
         // );
 
-        // intakeAndShoot.whileTrue(
+        // mainController.cross().whileTrue(
         //     new IntaterCommand(IntaterMode.INTAKEANDSHOOT, s_Intater, true)
         // );
     }
