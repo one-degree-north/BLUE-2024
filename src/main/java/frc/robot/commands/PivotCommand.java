@@ -53,6 +53,14 @@ public class PivotCommand extends Command {
         m_commandToRun = 
         new InstantCommand(() -> s_Pivot.setPivotPos(PivotConstants.SourceIntakePosition));
         break;
+
+      case STOP:
+        m_commandToRun = 
+        new InstantCommand(() -> s_Pivot.stopAll());
+
+      case LEVEL:
+        m_commandToRun = 
+        new InstantCommand(() -> s_Pivot.setPivotPos(PivotConstants.LevelPosition));
     }
   }
 
@@ -76,6 +84,6 @@ public class PivotCommand extends Command {
   }
 
   public enum PivotMode {
-    SPEAKER, AMP, GROUND_INTAKE, SOURCE_INTAKE;
+    SPEAKER, AMP, GROUND_INTAKE, SOURCE_INTAKE, STOP, LEVEL;
   }
 }

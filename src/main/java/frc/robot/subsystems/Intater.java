@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
@@ -27,8 +28,7 @@ public class Intater extends SubsystemBase {
   public Intater() {
     m_flywheelLeft = new CANSparkMax(IntaterConstants.flywheelLeftID, CANSparkMax.MotorType.kBrushless);
     m_flywheelRight = new CANSparkMax(IntaterConstants.flywheelRightID, CANSparkMax.MotorType.kBrushless);
-    m_intake = new CANSparkMax(IntaterConstants.intakeID, CANSparkMax.MotorType.kBrushless);
-    configMotors();
+    m_intake = new CANSparkMax(IntaterConstants.intakeID, CANSparkMax.MotorType.kBrushless);    configMotors();
   }
 
   private void configMotors(){
@@ -53,7 +53,6 @@ public class Intater extends SubsystemBase {
     //Get PID Controller
     flywheelLeftPIDController = m_flywheelLeft.getPIDController();
     flywheelRightPIDController = m_flywheelRight.getPIDController();
-    intakePIDController = m_intake.getPIDController();
 
     flywheelLeftEncoder = m_flywheelLeft.getEncoder();
     flywheelRightEncoder = m_flywheelRight.getEncoder();
@@ -76,11 +75,6 @@ public class Intater extends SubsystemBase {
     flywheelRightPIDController.setD(IntaterConstants.FlywheelRightkD);
     flywheelRightPIDController.setFF(IntaterConstants.FlywheelRightkFF);
     flywheelRightPIDController.setOutputRange(IntaterConstants.FlywheelRightkMinOutput, IntaterConstants.FlywheelRightkMaxOutput);
-
-    intakePIDController.setP(IntaterConstants.IntakekP);
-    intakePIDController.setI(IntaterConstants.IntakekI);
-    intakePIDController.setD(IntaterConstants.IntakekD);
-    intakePIDController.setOutputRange(IntaterConstants.IntakekMinOutput, IntaterConstants.IntakekMaxOutput);
   }
 
   //Methods
@@ -91,45 +85,45 @@ public class Intater extends SubsystemBase {
   }
 
   public void stopIntake() {
-    setIntakeSpeed(0);
+    setIntakeSpeedDutyCycle(0);
   }
 
   public void stopShooter() {
-    setLeftSpeed(0);
-    setRightSpeed(0);
+    setLeftSpeedRPS(0);
+    setRightSpeedRPS(0);
   }
 
-  public void setLeftSpeed(double velocity){
-    flywheelLeftPIDController.setReference(velocity, CANSparkMax.ControlType.kVelocity);
+  public void setLeftSpeedRPS(double velocity){
+    flywheelLeftPIDController.setReference(velocity*60, CANSparkMax.ControlType.kVelocity);
   }
 
-  public void setRightSpeed(double velocity){
-    flywheelRightPIDController.setReference(velocity, CANSparkMax.ControlType.kVelocity);
+  public void setRightSpeedRPS(double velocity){
+    flywheelRightPIDController.setReference(velocity*60, CANSparkMax.ControlType.kVelocity);
   }
 
-  public void setBothSpeed(double velocity){
-    flywheelRightPIDController.setReference(velocity, CANSparkMax.ControlType.kVelocity);
-    flywheelLeftPIDController.setReference(velocity, CANSparkMax.ControlType.kVelocity);
+  public void setBothSpeedRPS(double velocity){
+    flywheelRightPIDController.setReference(velocity*60, CANSparkMax.ControlType.kVelocity);
+    flywheelLeftPIDController.setReference(velocity*60, CANSparkMax.ControlType.kVelocity);
   }
 
-  public void setIntakeSpeed(double velocity){
-    intakePIDController.setReference(velocity, CANSparkMax.ControlType.kVelocity);
+  public void setIntakeSpeedDutyCycle(double velocity){
+    m_intake.set(velocity);
   }
 
   public double getLeftSpeedRPS(){
-    return flywheelLeftEncoder.getVelocity();
+    return flywheelLeftEncoder.getVelocity()/60;
   }
 
   public double getRightSpeedRPS(){
-    return flywheelRightEncoder.getVelocity();
+    return flywheelRightEncoder.getVelocity()/60;
   }
 
   public double getIntakeSpeedRPS(){
-    return intakeEncoder.getVelocity();
+    return intakeEncoder.getVelocity()/60;
   }
 
   public double getIntakePercentSpeed(){
-    return m_intake.get();
+    return m_intake.get()*100;
   }
 
   public double getLeftPercentSpeed(){
@@ -145,7 +139,7 @@ public class Intater extends SubsystemBase {
 
     SmartDashboard.putNumber("Intake RPS", getIntakeSpeedRPS());
     SmartDashboard.putNumber("Left Shooter RPS", getLeftSpeedRPS());
-    SmartDashboard.putNumber("Right Shooter RPS", getRightSpeedRPS());
+    SmartDashboard.putNumber("Right Shooter RPS", getRightSpeedRPS());;
   }
   
 }

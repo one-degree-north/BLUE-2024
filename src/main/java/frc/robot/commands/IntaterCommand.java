@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants;
+import frc.robot.Constants.IntaterConstants;
 import frc.robot.subsystems.Intater;
 
 public class IntaterCommand extends Command {
@@ -34,23 +35,28 @@ public class IntaterCommand extends Command {
 
     switch (m_mode) {
       case SPEAKERSHOOT:
-        m_commandToRun = new InstantCommand(() -> s_Intater.setBothSpeed(Constants.IntaterConstants.SpeakerVel));
+        m_commandToRun = new InstantCommand(() -> s_Intater.setBothSpeedRPS(Constants.IntaterConstants.SpeakerVelRPS));
         break;
 
       case AMPSHOOT:
-        m_commandToRun = new InstantCommand(() -> s_Intater.setBothSpeed(Constants.IntaterConstants.AmpVel));
+        m_commandToRun = new InstantCommand(() -> s_Intater.setBothSpeedRPS(Constants.IntaterConstants.AmpVelRPS));
         break;
 
       case INTAKE:
-        m_commandToRun = new InstantCommand(() -> s_Intater.setBothSpeed(Constants.IntaterConstants.IntakeVel));
+        m_commandToRun = new InstantCommand(() -> s_Intater.setIntakeSpeedDutyCycle(Constants.IntaterConstants.IntakeVelDutyCycle));
         break;
 
       case OUTTAKE:
-        m_commandToRun = new InstantCommand(() -> s_Intater.setBothSpeed(Constants.IntaterConstants.OuttakeVel));
+        m_commandToRun = new InstantCommand(() -> s_Intater.setIntakeSpeedDutyCycle(Constants.IntaterConstants.OuttakeVelDutyCycle));
         break;
       
       case STOP:
         m_commandToRun = new InstantCommand(() -> s_Intater.stopAll());
+      
+      case INTAKEANDSHOOT:
+        m_commandToRun = new InstantCommand(() -> s_Intater.setIntakeSpeedDutyCycle(IntaterConstants.IntakeVelDutyCycle));
+        m_commandToRun = new InstantCommand(() -> s_Intater.setBothSpeedRPS(IntaterConstants.SpeakerVelRPS));
+
     }
   }
 
@@ -74,6 +80,6 @@ public class IntaterCommand extends Command {
   }
 
   public enum IntaterMode {
-    SPEAKERSHOOT, INTAKE, STOP, OUTTAKE, AMPSHOOT
+    SPEAKERSHOOT, INTAKE, STOP, OUTTAKE, AMPSHOOT, LEVEL, INTAKEANDSHOOT;
   }
 }

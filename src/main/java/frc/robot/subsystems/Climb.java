@@ -35,10 +35,6 @@ public class Climb extends SubsystemBase {
   public ClimbMode ClimbMode;
 
   public Climb() {
-    m_climbLeft = new CANSparkMax(Constants.ClimbConstants.climbMotorLeftID, MotorType.kBrushless);
-    m_climbRight = new CANSparkMax(Constants.ClimbConstants.climbMotorRightID, MotorType.kBrushless);
-    climbLeftEncoder = new DutyCycleEncoder(Constants.ClimbConstants.climbLeftEncoderID);
-    climbRightEncoder = new DutyCycleEncoder(Constants.ClimbConstants.climbRightEncoderID);
     climbOffset = Constants.ClimbConstants.climbOffset;
     climbLeftPIDController = new ProfiledPIDController(kP, kI, kD, null);
     climbRightPIDController = new ProfiledPIDController(kP, kI, kD, null);

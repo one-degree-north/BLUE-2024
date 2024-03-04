@@ -5,11 +5,11 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -20,7 +20,7 @@ public class Pivot extends SubsystemBase {
 
   private CANSparkMax m_pivotLead;
   private CANSparkMax m_pivotFollow;
-  private AbsoluteEncoder pivotEncoder;
+  private DutyCycleEncoder pivotEncoder;
   private double pivotOffset;
   private Boolean encodersAreReset;
   private double kP, kI, kD;
@@ -34,9 +34,9 @@ public class Pivot extends SubsystemBase {
     m_pivotLead = new CANSparkMax(PivotConstants.pivotLeadID, MotorType.kBrushless);
     m_pivotFollow = new CANSparkMax(PivotConstants.pivotFollowID, MotorType.kBrushless);
     pivotPIDController = new ProfiledPIDController(kP, kI, kD, new TrapezoidProfile.Constraints(maxVel, maxAccel));
-
-    configMotors();
+    pivotEncoder = new DutyCycleEncoder(PivotConstants.throughBoreID);
     pivotPIDController.setTolerance(PivotConstants.PivotTolerance);
+    configMotors();
 
   }
 
@@ -73,7 +73,7 @@ public class Pivot extends SubsystemBase {
 
   //Methods
   public void resetMotorToAbsolute(){
-    double offsetPivotPos = pivotEncoder.getPosition() - pivotOffset;
+    double offsetPivotPos = pivotEncoder.getAbsolutePosition() - pivotOffset;
     if (encodersAreReset == false) { 
       m_pivotLead.getEncoder().setPosition(offsetPivotPos);
       encodersAreReset = true;
@@ -109,6 +109,7 @@ public class Pivot extends SubsystemBase {
 
     SmartDashboard.putNumber("PivotRPS", getPivotPos());
     SmartDashboard.putNumber("PivotPos", getPivotRPS());  
+    SmartDashboard.putNumber("EncoderPos", pivotEncoder.getAbsolutePosition());
 
     m_pivotLead.setVoltage(
       pivotPIDController.calculate(getPivotPos())
@@ -117,7 +118,6 @@ public class Pivot extends SubsystemBase {
           pivotPIDController.getSetpoint().position,
           pivotPIDController.getSetpoint().velocity
           )
-
     );
   }
   

@@ -15,28 +15,27 @@ public final class Constants {
     
     public static final class StickConstants {
         public static final double stickDeadband = 0.1;    
-        public static final int stickID = 1; 
+        public static final int stickID = 0; 
     }
 
     public static final class IntaterConstants {
         //CAN ID
-        public static final int flywheelLeftID = 0;
-        public static final int flywheelRightID = 0;
+        public static final int flywheelLeftID = 14;
+        public static final int flywheelRightID = 15;
         public static final int intakeID = 13;
-        public static final int intakeSensorID = 0;
 
         //PID VALUES
-        public static final double FlywheelLeftkP = 0;
+        public static final double FlywheelLeftkP = 0.0084717;
         public static final double FlywheelLeftkI = 0;
         public static final double FlywheelLeftkD = 0;
-        public static final double FlywheelLeftkFF = 0;
+        public static final double FlywheelLeftkFF = 0.074671;
         public static final double FlywheelLeftkMaxOutput = 0;
         public static final double FlywheelLeftkMinOutput = 0;
 
-        public static final double FlywheelRightkP = 0;
+        public static final double FlywheelRightkP = 0.0084717;
         public static final double FlywheelRightkI = 0;
         public static final double FlywheelRightkD = 0;
-        public static final double FlywheelRightkFF = 0;
+        public static final double FlywheelRightkFF = 0.074671;
         public static final double FlywheelRightkMaxOutput = 0;
         public static final double FlywheelRightkMinOutput = 0;
 
@@ -49,16 +48,17 @@ public final class Constants {
         public static final double IntakekMinOutput = 0;
 
         //POSITIOSN
-        public static final double SpeakerVel = 0;
-        public static final double AmpVel = 0;
-        public static final double OuttakeVel = 0;
-        public static final double IntakeVel = 0;
+        public static final double SpeakerVelRPS = 4000/60;
+        public static final double AmpVelRPS = 0;
+        public static final double OuttakeVelDutyCycle = 0;
+        public static final double IntakeVelDutyCycle = 0.5;
     }
 
     public static final class PivotConstants {
         //CAN ID
-        public static final int pivotLeadID = 0;
-        public static final int pivotFollowID = 0;
+        public static final int pivotLeadID = 16;
+        public static final int pivotFollowID = 17;
+        public static final int throughBoreID = 0;
 
         //PID VALUES
         public static final double kP = 0;
@@ -84,12 +84,6 @@ public final class Constants {
     }
     
     public static final class ClimbConstants {
-        //CAN ID
-        public static final int climbMotorLeftID = 0;
-        public static final int climbMotorRightID = 0;
-        public static final int climbLeftEncoderID = 0;
-        public static final int climbRightEncoderID = 0;
-
         //PID VALUES
         public static final double kA = 0;
         public static final double kV = 0;
