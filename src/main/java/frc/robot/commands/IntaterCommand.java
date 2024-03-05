@@ -60,6 +60,8 @@ public class IntaterCommand extends Command {
         m_commandToRun = new InstantCommand(() -> s_Intater.setIntakeSpeedDutyCycle(IntaterConstants.IntakeVelDutyCycle))
         .alongWith(new InstantCommand(() -> s_Intater.setBothSpeedRPS(IntaterConstants.SpeakerVelRPS)))
         .alongWith(Commands.waitUntil(() -> false));
+      default:
+        break;
 
     }
   }

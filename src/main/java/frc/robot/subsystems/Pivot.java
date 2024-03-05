@@ -22,12 +22,9 @@ public class Pivot extends SubsystemBase {
   private CANSparkMax m_pivotFollow;
   private DutyCycleEncoder pivotEncoder;
   private double pivotOffset;
-  private Boolean encodersAreReset;
   private double kP, kI, kD;
-  private double kA, kG, kS, kV;
   private double maxVel, maxAccel;
   private ProfiledPIDController pivotPIDController;
-  private ArmFeedforward pivotFFController;
 
   public Pivot() {
 
@@ -44,8 +41,6 @@ public class Pivot extends SubsystemBase {
   private void configMotors(){
     pivotOffset = 0.717;
 
-    m_pivotFollow.follow(m_pivotLead);
-
     //Neo Conifg
     m_pivotLead.restoreFactoryDefaults();
     m_pivotLead.setSmartCurrentLimit(20);
@@ -58,22 +53,16 @@ public class Pivot extends SubsystemBase {
 
     m_pivotFollow.restoreFactoryDefaults();
     m_pivotFollow.setSmartCurrentLimit(20);
-    m_pivotFollow.setInverted(true);
     m_pivotFollow.setOpenLoopRampRate(Constants.PivotConstants.PivotOpenLoopRampRate);
     m_pivotFollow.setIdleMode(CANSparkMax.IdleMode.kCoast);
     
-    //Get PID Values
-    kA = Constants.PivotConstants.kA; 
-    kV = Constants.PivotConstants.kV;
-    kS = Constants.PivotConstants.kS;
-    kG = Constants.PivotConstants.kG;
 
     kP = Constants.PivotConstants.kP;
     kI = Constants.PivotConstants.kI;
     kD = Constants.PivotConstants.kD;
 
-    //PID Controller Config
-    pivotFFController = new ArmFeedforward(kS, kG, kV, kA);
+    m_pivotFollow.follow(m_pivotLead, true);
+
   }
 
   //Methods
@@ -84,10 +73,6 @@ public class Pivot extends SubsystemBase {
 
   public void setPivotPos(double setpoint){
     pivotPIDController.setGoal(setpoint);
-  }
-
-  public void levelPivot(){
-    pivotPIDController.setGoal(PivotConstants.LevelPosition);
   }
 
   public double getPivotPos(){
@@ -106,17 +91,12 @@ public class Pivot extends SubsystemBase {
   @Override
   public void periodic() {
 
-    SmartDashboard.putNumber("PivotRPS", getPivotRPS());
-    SmartDashboard.putNumber("PivotPos", getPivotPos());  
-    SmartDashboard.putNumber("EncoderPos", pivotEncoder.getAbsolutePosition());
+    SmartDashboard.putNumber("Pivot RPS", getPivotRPS());
+    SmartDashboard.putNumber("Pivot Rotations", getPivotPos());  
+    SmartDashboard.putNumber("Absolute Encoder Rotations", pivotEncoder.getAbsolutePosition());
 
     m_pivotLead.setVoltage(
       pivotPIDController.calculate(getPivotPos())
-          // +
-          // pivotFFController.calculate(
-          // pivotPIDController.getSetpoint().position,
-          // pivotPIDController.getSetpoint().velocity
-          // )
     );
   }
   
