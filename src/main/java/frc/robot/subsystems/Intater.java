@@ -25,7 +25,8 @@ public class Intater extends SubsystemBase {
   public Intater() {
     m_flywheelLeft = new CANSparkMax(IntaterConstants.flywheelLeftID, CANSparkMax.MotorType.kBrushless);
     m_flywheelRight = new CANSparkMax(IntaterConstants.flywheelRightID, CANSparkMax.MotorType.kBrushless);
-    m_intake = new CANSparkMax(IntaterConstants.intakeID, CANSparkMax.MotorType.kBrushless);    configMotors();
+    m_intake = new CANSparkMax(IntaterConstants.intakeID, CANSparkMax.MotorType.kBrushless);    
+    configMotors();
   }
 
   private void configMotors(){

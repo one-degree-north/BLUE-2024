@@ -39,15 +39,15 @@ public class RobotContainer {
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-        // s_Swerve.setDefaultCommand(
-        //     new TeleopSwerve(
-        //         s_Swerve, 
-        //         () -> -mainController.getLeftY(),
-        //         () -> -mainController.getLeftX(),
-        //         () -> -mainController.getRightX(),
-        //         () -> false
-        //     )
-        // );
+        s_Swerve.setDefaultCommand(
+            new TeleopSwerve(
+                s_Swerve, 
+                () -> -mainController.getLeftY(),
+                () -> -mainController.getLeftX(),
+                () -> -mainController.getRightX(),
+                () -> false
+            )
+        );
 
         // Configure the button bindings
         configureButtonBindings();

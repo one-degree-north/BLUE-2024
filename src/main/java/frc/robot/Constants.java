@@ -29,17 +29,13 @@ public final class Constants {
         public static final double FlywheelLeftkI = 0;
         public static final double FlywheelLeftkD = 0;
         public static final double FlywheelLeftkFF = 0.074671;
-        public static final double FlywheelLeftkMaxOutput = 0;
-        public static final double FlywheelLeftkMinOutput = 0;
 
         public static final double FlywheelRightkP = 0.0084717;
         public static final double FlywheelRightkI = 0;
         public static final double FlywheelRightkD = 0;
         public static final double FlywheelRightkFF = 0.074671;
-        public static final double FlywheelRightkMaxOutput = 0;
-        public static final double FlywheelRightkMinOutput = 0;
 
-        public static final double flywheelGearRatio = 1;
+        public static final double flywheelGearRatio = 1/2;
 
         public static final double IntakekP = 0;
         public static final double IntakekI = 0;
@@ -62,23 +58,23 @@ public final class Constants {
         public static final double pivotGearRatio = 80.0/1.0;
 
         //PID VALUES
-        public static final double kP = 1;
+        public static final double kP = 0;
         public static final double kI = 0;
         public static final double kD = 0;
         public static final double kA = 0;
         public static final double kV = 0;
         public static final double kS = 0;
         public static final double kG = 0;
-        public static final double maxVel = 0;
-        public static final double maxAccel = 0;
+        public static final double maxVel = 90;
+        public static final double maxAccel = 100;
 
         //CONFIG
-        public static final double PivotOpenLoopRampRate = 0;
+        public static final double PivotOpenLoopRampRate = 4;
         public static final double PivotTolerance = 0;
 
         //POSITIONS
-        public static final double SpeakerPosition = 0;
-        public static final double AmpPosition = 0;
+        public static final double SpeakerPosition = 0.;
+        public static final double AmpPosition = 0.1697;
         public static final double GroundIntakePosition = 0;
         public static final double SourceIntakePosition = 0;
         public static final double LevelPosition = 0;
@@ -180,7 +176,7 @@ public final class Constants {
             public static final int driveMotorID = 8;
             public static final int angleMotorID = 7;
             public static final int canCoderID = 12;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(55.8);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(53.876+180);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -190,7 +186,7 @@ public final class Constants {
             public static final int driveMotorID = 2;
             public static final int angleMotorID = 1;
             public static final int canCoderID = 9;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(37.79);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(38.232+180);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -200,7 +196,7 @@ public final class Constants {
             public static final int driveMotorID = 6;
             public static final int angleMotorID = 5;
             public static final int canCoderID = 11;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(42.27);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(42.275+180);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -210,7 +206,7 @@ public final class Constants {
             public static final int driveMotorID = 4;
             public static final int angleMotorID = 3;
             public static final int canCoderID = 10;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-92);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-93.164+180);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
