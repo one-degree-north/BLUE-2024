@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
@@ -33,20 +35,20 @@ public class Intater extends SubsystemBase {
 
     //NEO 500 Configs
     m_flywheelLeft.restoreFactoryDefaults();
-    m_flywheelLeft.setSmartCurrentLimit(35);
+    m_flywheelLeft.setSmartCurrentLimit(60);
     m_flywheelLeft.setInverted(false);
     m_flywheelLeft.setIdleMode(IdleMode.kCoast);
 
     m_flywheelRight.restoreFactoryDefaults();
-    m_flywheelRight.setSmartCurrentLimit(35);
+    m_flywheelRight.setSmartCurrentLimit(60);
     m_flywheelRight.setInverted(true);
     m_flywheelRight.setIdleMode(IdleMode.kCoast);
     
 
     m_intake.restoreFactoryDefaults();
-    m_intake.setSmartCurrentLimit(20);
-    m_intake.setInverted(false);
-    m_intake.setIdleMode(IdleMode.kBrake);
+    m_intake.setSmartCurrentLimit(60);
+    m_intake.setInverted(true);
+    m_intake.setIdleMode(IdleMode.kCoast);
 
     //Get PID Controller
     flywheelLeftPIDController = m_flywheelLeft.getPIDController();
@@ -70,6 +72,15 @@ public class Intater extends SubsystemBase {
     flywheelRightPIDController.setI(IntaterConstants.FlywheelRightkI);
     flywheelRightPIDController.setD(IntaterConstants.FlywheelRightkD);
     flywheelRightPIDController.setFF(IntaterConstants.FlywheelRightkFF);
+
+    flywheelLeftPIDController.setFeedbackDevice(flywheelLeftEncoder);
+    flywheelRightPIDController.setFeedbackDevice(flywheelRightEncoder);
+
+    m_flywheelLeft.enableVoltageCompensation(12);
+    m_flywheelRight.enableVoltageCompensation(12);
+    
+    m_flywheelLeft.burnFlash();
+    m_flywheelRight.burnFlash();
   }
 
   //Methods
@@ -84,21 +95,26 @@ public class Intater extends SubsystemBase {
   }
 
   public void stopShooter() {
-    setLeftSpeedRPS(0);
-    setRightSpeedRPS(0);
+    
+    setBothSpeedVoltage(0);
   }
 
   public void setLeftSpeedRPS(double velocity){
-    flywheelLeftPIDController.setReference(velocity, CANSparkMax.ControlType.kVelocity);
+    flywheelLeftPIDController.setReference(velocity, ControlType.kVelocity);
   }
 
   public void setRightSpeedRPS(double velocity){
-    flywheelRightPIDController.setReference(velocity, CANSparkMax.ControlType.kVelocity);
+    flywheelRightPIDController.setReference(velocity, ControlType.kVelocity);
   }
 
   public void setBothSpeedRPS(double velocity){
-    flywheelRightPIDController.setReference(velocity, CANSparkMax.ControlType.kVelocity);
-    flywheelLeftPIDController.setReference(velocity, CANSparkMax.ControlType.kVelocity);
+    setLeftSpeedRPS(velocity);
+    setRightSpeedRPS(velocity);
+  }
+
+  public void setBothSpeedVoltage(double volts) {
+    m_flywheelLeft.setVoltage(volts);
+    m_flywheelRight.setVoltage(volts);
   }
 
   public void setIntakeSpeedDutyCycle(double velocity){

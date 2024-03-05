@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.IntaterConstants;
 import frc.robot.subsystems.Intater;
@@ -34,22 +35,40 @@ public class IntaterCommand extends Command {
 
     switch (m_mode) {
       case SPEAKERSHOOT:
-        m_commandToRun = new InstantCommand(() -> s_Intater.setBothSpeedRPS(Constants.IntaterConstants.SpeakerVelRPS))
-        .alongWith(Commands.waitUntil(() -> false));
+        m_commandToRun = 
+        new InstantCommand(()-> s_Intater.setIntakeSpeedDutyCycle(IntaterConstants.OuttakeVelDutyCycle))
+        .andThen(Commands.waitSeconds(0.05))
+        .andThen(new InstantCommand(() -> s_Intater.stopIntake()))
+        .andThen(new InstantCommand(() -> s_Intater.setBothSpeedRPS(Constants.IntaterConstants.SpeakerVelRPS)))
+        .andThen(Commands.waitSeconds(3.5))
+        .andThen(new InstantCommand(() -> s_Intater.setIntakeSpeedDutyCycle(IntaterConstants.IntakeFeedDutyCycle)))
+        .andThen(Commands.waitUntil(() -> false));
         break;
 
-      case AMPSHOOT:
-        m_commandToRun = new InstantCommand(() -> s_Intater.setBothSpeedRPS(Constants.IntaterConstants.AmpVelRPS))
+      case AMPINTAKE:
+        m_commandToRun = new InstantCommand(() -> s_Intater.setIntakeSpeedDutyCycle(Constants.IntaterConstants.IntakeVelDutyCycle))
+        .alongWith(new InstantCommand(() -> s_Intater.setBothSpeedRPS(IntaterConstants.ShooterCounteractingRPS*10)))
         .alongWith(Commands.waitUntil(() -> false));
         break;
-
       case INTAKE:
         m_commandToRun = new InstantCommand(() -> s_Intater.setIntakeSpeedDutyCycle(Constants.IntaterConstants.IntakeVelDutyCycle))
+        .alongWith(new InstantCommand(() -> s_Intater.setBothSpeedRPS(-IntaterConstants.ShooterCounteractingRPS)))
         .alongWith(Commands.waitUntil(() -> false));
         break;
 
       case OUTTAKE:
         m_commandToRun = new InstantCommand(() -> s_Intater.setIntakeSpeedDutyCycle(Constants.IntaterConstants.OuttakeVelDutyCycle))
+        .alongWith(new InstantCommand(() -> s_Intater.setBothSpeedRPS(-IntaterConstants.ShooterCounteractingRPS)))
+        .alongWith(Commands.waitUntil(() -> false));
+        break;
+
+      case AMP:
+        m_commandToRun = 
+        new InstantCommand(() -> s_Intater.setIntakeSpeedDutyCycle(IntaterConstants.OuttakeVelDutyCycle))
+        .alongWith(new InstantCommand(() -> s_Intater.setBothSpeedRPS(Constants.IntaterConstants.ShooterCounteractingRPS)))
+        .alongWith(Commands.waitSeconds(0.2))
+        .andThen(new InstantCommand(() -> s_Intater.setIntakeSpeedDutyCycle(Constants.IntaterConstants.OuttakeVelDutyCycle)))
+        .alongWith(new InstantCommand(() -> s_Intater.setBothSpeedRPS(-IntaterConstants.ShooterCounteractingRPS)))
         .alongWith(Commands.waitUntil(() -> false));
         break;
       
@@ -64,6 +83,8 @@ public class IntaterCommand extends Command {
         break;
 
     }
+
+    m_commandToRun.initialize();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -85,6 +106,6 @@ public class IntaterCommand extends Command {
   }
 
   public enum IntaterMode {
-    SPEAKERSHOOT, INTAKE, STOP, OUTTAKE, AMPSHOOT, LEVEL, INTAKEANDSHOOT;
+    SPEAKERSHOOT, INTAKE, STOP, OUTTAKE, AMPINTAKE, LEVEL, INTAKEANDSHOOT, AMP;
   }
 }

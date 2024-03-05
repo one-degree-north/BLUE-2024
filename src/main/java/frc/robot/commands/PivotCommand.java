@@ -37,7 +37,7 @@ public class PivotCommand extends Command {
       case SPEAKER:
         m_commandToRun = 
         new InstantCommand(() -> s_Pivot.setPivotPos(PivotConstants.SpeakerPosition))
-        .alongWith(Commands.waitUntil(() -> 
+        .andThen(Commands.waitUntil(() -> 
           Math.abs(s_Pivot.getPivotPos()-PivotConstants.SpeakerPosition) < allowableError
         ));
         break;  
@@ -45,15 +45,22 @@ public class PivotCommand extends Command {
       case AMP:
         m_commandToRun = 
         new InstantCommand(() -> s_Pivot.setPivotPos(PivotConstants.AmpPosition))
-        .alongWith(Commands.waitUntil(() -> 
+        .andThen(Commands.waitUntil(() -> 
           Math.abs(s_Pivot.getPivotPos()-PivotConstants.AmpPosition) < allowableError
         ));
+        break;
+      case DEFAULT:
+       m_commandToRun = 
+          new InstantCommand(() -> s_Pivot.setPivotPos(PivotConstants.DefaultPosition))
+          .andThen(Commands.waitUntil(() -> 
+            Math.abs(s_Pivot.getPivotPos()-PivotConstants.DefaultPosition) < allowableError
+          ));
         break;
 
       case GROUND_INTAKE:
         m_commandToRun = 
         new InstantCommand(() -> s_Pivot.setPivotPos(PivotConstants.GroundIntakePosition))
-        .alongWith(Commands.waitUntil(() -> 
+        .andThen(Commands.waitUntil(() -> 
           Math.abs(s_Pivot.getPivotPos()-PivotConstants.GroundIntakePosition) < allowableError
         ));
         break;
@@ -61,7 +68,7 @@ public class PivotCommand extends Command {
       case SOURCE_INTAKE:
         m_commandToRun = 
         new InstantCommand(() -> s_Pivot.setPivotPos(PivotConstants.SourceIntakePosition))
-        .alongWith(Commands.waitUntil(() -> 
+        .andThen(Commands.waitUntil(() -> 
           Math.abs(s_Pivot.getPivotPos()-PivotConstants.SourceIntakePosition) < allowableError
         ));
         break;
@@ -74,6 +81,8 @@ public class PivotCommand extends Command {
         m_commandToRun = 
         new InstantCommand(() -> s_Pivot.setPivotPos(PivotConstants.LevelPosition));
     }
+
+    m_commandToRun.initialize();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -85,6 +94,7 @@ public class PivotCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_commandToRun.end(interrupted);
   }
 
   // Returns true when the command should end.
@@ -94,6 +104,6 @@ public class PivotCommand extends Command {
   }
 
   public enum PivotMode {
-    SPEAKER, AMP, GROUND_INTAKE, SOURCE_INTAKE, STOP, LEVEL;
+    SPEAKER, AMP, GROUND_INTAKE, SOURCE_INTAKE, STOP, LEVEL, DEFAULT;
   }
 }

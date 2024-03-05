@@ -25,29 +25,26 @@ public final class Constants {
         public static final int intakeID = 13;
 
         //PID VALUES
-        public static final double FlywheelLeftkP = 0.0084717;
+        public static final double FlywheelLeftkP = 0.0;
         public static final double FlywheelLeftkI = 0;
         public static final double FlywheelLeftkD = 0;
-        public static final double FlywheelLeftkFF = 0.074671;
+        public static final double FlywheelLeftkFF = 0.00298;
 
-        public static final double FlywheelRightkP = 0.0084717;
+        public static final double FlywheelRightkP = 0.0;
         public static final double FlywheelRightkI = 0;
         public static final double FlywheelRightkD = 0;
-        public static final double FlywheelRightkFF = 0.074671;
+        public static final double FlywheelRightkFF = 0.00298;
+        //0.0357
 
-        public static final double flywheelGearRatio = 1/2;
-
-        public static final double IntakekP = 0;
-        public static final double IntakekI = 0;
-        public static final double IntakekD = 0;
-        public static final double IntakekMaxOutput = 0;
-        public static final double IntakekMinOutput = 0;
+        public static final double flywheelGearRatio = 1.0/4.25;
 
         //POSITIOSN
-        public static final double SpeakerVelRPS = 4000/60;
-        public static final double AmpVelRPS = 0;
-        public static final double OuttakeVelDutyCycle = 0;
-        public static final double IntakeVelDutyCycle = 0.5;
+        public static final double SpeakerVelRPS = 18000.0/60;
+        public static final double AmpVelRPS = -1000/60;
+        public static final double OuttakeVelDutyCycle = -0.6;
+        public static final double IntakeVelDutyCycle = 0.7;
+        public static final double IntakeFeedDutyCycle = 1;
+        public static final double ShooterCounteractingRPS = 1;
     }
 
     public static final class PivotConstants {
@@ -58,47 +55,25 @@ public final class Constants {
         public static final double pivotGearRatio = 80.0/1.0;
 
         //PID VALUES
-        public static final double kP = 0;
+        public static final double kP = 3.5
+        ;
         public static final double kI = 0;
         public static final double kD = 0;
-        public static final double kA = 0;
-        public static final double kV = 0;
-        public static final double kS = 0;
-        public static final double kG = 0;
-        public static final double maxVel = 90;
-        public static final double maxAccel = 100;
+        public static final double kFF = 0;
+        public static final double maxVel = 1;
+        public static final double maxAccel = 2;
 
         //CONFIG
         public static final double PivotOpenLoopRampRate = 4;
         public static final double PivotTolerance = 0;
 
         //POSITIONS
-        public static final double SpeakerPosition = 0.;
-        public static final double AmpPosition = 0.1697;
-        public static final double GroundIntakePosition = 0;
-        public static final double SourceIntakePosition = 0;
+        public static final double SpeakerPosition = -0.13;
+        public static final double DefaultPosition = 0.18;
+        public static final double AmpPosition = 0.12;
+        public static final double GroundIntakePosition = -0.13;
+        public static final double SourceIntakePosition = 0.12;
         public static final double LevelPosition = 0;
-    }
-    
-    public static final class ClimbConstants {
-        //PID VALUES
-        public static final double kA = 0;
-        public static final double kV = 0;
-        public static final double kS = 0;
-        public static final double kG = 0;
-
-        public static final double kP = 0;
-        public static final double kI = 0;
-        public static final double kD = 0;
-
-        //POSITIONS
-        public static final double ClimbUpPosition = 0;
-        public static final double ClimbDownPosition = 0;
-
-        public static final double DutyCycle = 0;
-
-        //CLIMB OFFSET
-        public static final double climbOffset = 0;
     }
 
     public static final class SwerveConstants {
@@ -106,7 +81,9 @@ public final class Constants {
         /* Drivetrain Constants */
         public static final double trackWidth = Units.inchesToMeters(25.108); //TODO: This must be tuned to specific robot
         public static final double wheelBase = Units.inchesToMeters(25.108); //TODO: This must be tuned to specific robot
+        public static final double drivebaseRadius = Math.hypot(trackWidth, wheelBase) / 2.0;
         public static final double wheelCircumference = Units.inchesToMeters(4.0)*Math.PI;
+        
 
 
         /* Swerve Kinematics 
@@ -145,7 +122,7 @@ public final class Constants {
         public static final double closedLoopRamp = 0.25;
 
         /* Angle Motor PID Values */
-        public static final double angleKP = 0.2;
+        public static final double angleKP = 100;
         public static final double angleKI = 0;
         public static final double angleKD = 0;
 

@@ -6,14 +6,16 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase.ControlType;
+
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.lib.math.Conversions;
 import frc.robot.Constants;
 import frc.robot.Constants.PivotConstants;
 
@@ -24,17 +26,14 @@ public class Pivot extends SubsystemBase {
   private CANSparkMax m_pivotFollow;
   private DutyCycleEncoder pivotEncoder;
   private double pivotOffset;
-  private double kP, kI, kD;
-  private double maxVel, maxAccel;
-  private ProfiledPIDController pivotPIDController;
+  private SparkPIDController pivotPIDController;
 
   public Pivot() {
 
     m_pivotLead = new CANSparkMax(PivotConstants.pivotLeadID, MotorType.kBrushless);
     m_pivotFollow = new CANSparkMax(PivotConstants.pivotFollowID, MotorType.kBrushless);
-    pivotPIDController = new ProfiledPIDController(kP, kI, kD, new TrapezoidProfile.Constraints(maxVel, maxAccel));
+    pivotPIDController = m_pivotLead.getPIDController();
     pivotEncoder = new DutyCycleEncoder(PivotConstants.throughBoreID);
-    pivotPIDController.setTolerance(PivotConstants.PivotTolerance);
     configMotors();
     resetMotorToAbsolute();
 
@@ -59,9 +58,12 @@ public class Pivot extends SubsystemBase {
     m_pivotFollow.setIdleMode(CANSparkMax.IdleMode.kCoast);
     
 
-    kP = Constants.PivotConstants.kP;
-    kI = Constants.PivotConstants.kI;
-    kD = Constants.PivotConstants.kD;
+    pivotPIDController.setP(Constants.PivotConstants.kP);
+    pivotPIDController.setI(Constants.PivotConstants.kI);
+    pivotPIDController.setD(Constants.PivotConstants.kD);
+    pivotPIDController.setFF(Constants.PivotConstants.kFF);
+
+    pivotPIDController.setFeedbackDevice(m_pivotLead.getEncoder());
 
     m_pivotFollow.follow(m_pivotLead, true);
 
@@ -74,7 +76,7 @@ public class Pivot extends SubsystemBase {
   }
 
   public void setPivotPos(double setpoint){
-    pivotPIDController.setGoal(setpoint);
+    pivotPIDController.setReference(setpoint, ControlType.kPosition);
   }
 
   public double getPivotPos(){
@@ -97,9 +99,6 @@ public class Pivot extends SubsystemBase {
     SmartDashboard.putNumber("Pivot Rotations", getPivotPos());  
     SmartDashboard.putNumber("Absolute Encoder Rotations", pivotEncoder.getAbsolutePosition());
 
-    m_pivotLead.setVoltage(
-      pivotPIDController.calculate(getPivotPos())
-    );
   }
   
 }
