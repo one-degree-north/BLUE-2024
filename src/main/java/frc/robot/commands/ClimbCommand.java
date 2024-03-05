@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.ClimbConstants;
 import frc.robot.subsystems.Climb;
@@ -14,16 +15,14 @@ public class ClimbCommand extends Command {
   private ClimbMode m_mode;
   private Climb s_Climb;
   private Command m_commandToRun;
-  private boolean m_stopWhenFinished;
 
-  public ClimbCommand(ClimbMode mode, Climb climb, boolean stopWhenFinished) {
+  public ClimbCommand(ClimbMode mode, Climb climb) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.s_Climb = climb;
     addRequirements(s_Climb);
   
 
     this.m_mode = mode;
-    this.m_stopWhenFinished = stopWhenFinished;
   }
 
   // Called when the command is initially scheduled.
@@ -31,11 +30,13 @@ public class ClimbCommand extends Command {
   public void initialize() {
     switch (m_mode) {
       case CLIMB_UP:
-      m_commandToRun = new InstantCommand(() -> s_Climb.setBothPos(ClimbConstants.ClimbUpPosition));
+      m_commandToRun = new InstantCommand(() -> s_Climb.setBothPos(ClimbConstants.ClimbUpPosition))
+      .alongWith(Commands.waitUntil(() -> false));
         break;
 
       case CLIMB_DOWN:
-      m_commandToRun = new InstantCommand(() -> s_Climb.setBothPos(ClimbConstants.ClimbDownPosition));
+      m_commandToRun = new InstantCommand(() -> s_Climb.setBothPos(ClimbConstants.ClimbDownPosition))
+      .alongWith(Commands.waitUntil(() -> false));
         break;
 
       case STOP_CLIMB:
@@ -53,7 +54,6 @@ public class ClimbCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if (m_stopWhenFinished)
       s_Climb.stopClimb();
   }
 

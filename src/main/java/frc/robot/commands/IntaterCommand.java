@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.IntaterConstants;
@@ -16,14 +17,12 @@ public class IntaterCommand extends Command {
   private IntaterMode m_mode;
   private Intater s_Intater;
   private Command m_commandToRun;
-  private boolean m_stopWhenFinished;
 
-  public IntaterCommand(IntaterMode mode, Intater intater, boolean stopWhenFinished) {
+  public IntaterCommand(IntaterMode mode, Intater intater) {
     this.s_Intater = intater;
     addRequirements(s_Intater);
 
     this.m_mode = mode;
-    this.m_stopWhenFinished = stopWhenFinished;
   }
   public IntaterCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -35,27 +34,32 @@ public class IntaterCommand extends Command {
 
     switch (m_mode) {
       case SPEAKERSHOOT:
-        m_commandToRun = new InstantCommand(() -> s_Intater.setBothSpeedRPS(Constants.IntaterConstants.SpeakerVelRPS));
+        m_commandToRun = new InstantCommand(() -> s_Intater.setBothSpeedRPS(Constants.IntaterConstants.SpeakerVelRPS))
+        .alongWith(Commands.waitUntil(() -> false));
         break;
 
       case AMPSHOOT:
-        m_commandToRun = new InstantCommand(() -> s_Intater.setBothSpeedRPS(Constants.IntaterConstants.AmpVelRPS));
+        m_commandToRun = new InstantCommand(() -> s_Intater.setBothSpeedRPS(Constants.IntaterConstants.AmpVelRPS))
+        .alongWith(Commands.waitUntil(() -> false));
         break;
 
       case INTAKE:
-        m_commandToRun = new InstantCommand(() -> s_Intater.setIntakeSpeedDutyCycle(Constants.IntaterConstants.IntakeVelDutyCycle));
+        m_commandToRun = new InstantCommand(() -> s_Intater.setIntakeSpeedDutyCycle(Constants.IntaterConstants.IntakeVelDutyCycle))
+        .alongWith(Commands.waitUntil(() -> false));
         break;
 
       case OUTTAKE:
-        m_commandToRun = new InstantCommand(() -> s_Intater.setIntakeSpeedDutyCycle(Constants.IntaterConstants.OuttakeVelDutyCycle));
+        m_commandToRun = new InstantCommand(() -> s_Intater.setIntakeSpeedDutyCycle(Constants.IntaterConstants.OuttakeVelDutyCycle))
+        .alongWith(Commands.waitUntil(() -> false));
         break;
       
       case STOP:
         m_commandToRun = new InstantCommand(() -> s_Intater.stopAll());
       
       case INTAKEANDSHOOT:
-        m_commandToRun = new InstantCommand(() -> s_Intater.setIntakeSpeedDutyCycle(IntaterConstants.IntakeVelDutyCycle));
-        m_commandToRun = new InstantCommand(() -> s_Intater.setBothSpeedRPS(IntaterConstants.SpeakerVelRPS));
+        m_commandToRun = new InstantCommand(() -> s_Intater.setIntakeSpeedDutyCycle(IntaterConstants.IntakeVelDutyCycle))
+        .alongWith(new InstantCommand(() -> s_Intater.setBothSpeedRPS(IntaterConstants.SpeakerVelRPS)))
+        .alongWith(Commands.waitUntil(() -> false));
 
     }
   }
@@ -69,8 +73,7 @@ public class IntaterCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if (m_stopWhenFinished)
-      s_Intater.stopAll();
+    s_Intater.stopAll();
   }
 
   // Returns true when the command should end.

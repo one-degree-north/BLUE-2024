@@ -60,50 +60,23 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-        mainController.triangle().onTrue(new PivotCommand(PivotMode.SPEAKER, s_Pivot, false));
-
+        mainController.L2().whileTrue(Commands.sequence(
+            new PivotCommand(PivotMode.AMP, s_Pivot),
+            new IntaterCommand(IntaterMode.AMPSHOOT, s_Intater)
+        ));
+        mainController.L1().whileTrue(Commands.sequence(
+            new PivotCommand(PivotMode.GROUND_INTAKE, s_Pivot),
+            new IntaterCommand(IntaterMode.INTAKE, s_Intater)
+        ));
+        mainController.R2().whileTrue(Commands.sequence(
+            new PivotCommand(PivotMode.SPEAKER, s_Pivot),
+            new IntaterCommand(IntaterMode.SPEAKERSHOOT, s_Intater)
+        ));
             
         /* Driver Buttons */
         // mainController.circle().onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
 
-        // mainController.R2().whileTrue(
-        //     Commands.sequence(
-        //     new PivotCommand(PivotMode.LEVEL, s_Pivot, true),
-        //     new IntaterCommand(IntaterMode.SPEAKERSHOOT, s_Intater, true)
-        //     )
-        // );
-
-        // mainController.R1().whileTrue(
-        //     Commands.sequence(
-        //         new PivotCommand(PivotMode.AMP, s_Pivot, true),
-        //         new IntaterCommand(IntaterMode.AMPSHOOT,s_Intater,true)
-        //     )
-        // );
-
-        // mainController.L2().whileTrue(
-        //     Commands.sequence(
-        //         new PivotCommand(PivotMode.GROUND_INTAKE, s_Pivot, true),
-        //         new IntaterCommand(IntaterMode.INTAKE, s_Intater, true)
-        //     )
-        // );
-
-        // mainController.L1().whileTrue(
-        //     Commands.sequence(
-        //         new PivotCommand(PivotMode.SOURCE_INTAKE, s_Pivot, true),
-        //         new IntaterCommand(IntaterMode.OUTTAKE, s_Intater, true)
-        //     )
-        // );
-
-        // mainController.triangle().onTrue(
-        //     Commands.parallel(
-        //         new IntaterCommand(IntaterMode.STOP, s_Intater, true),
-        //         new PivotCommand(PivotMode.STOP, s_Pivot, true)    
-        //     )
-        // );
-
-        // mainController.cross().whileTrue(
-        //     new IntaterCommand(IntaterMode.INTAKEANDSHOOT, s_Intater, true)
-        // );
+        
     }
 
     /**
@@ -113,6 +86,6 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
-        return new exampleAuto(s_Swerve);
+        return null;
     }
 }
