@@ -20,8 +20,8 @@ public final class Constants {
 
     public static final class IntaterConstants {
         //CAN ID
-        public static final int flywheelLeftID = 14;
-        public static final int flywheelRightID = 15;
+        public static final int flywheelLeftID = 15;
+        public static final int flywheelRightID = 14;
         public static final int intakeID = 13;
 
         //PID VALUES
