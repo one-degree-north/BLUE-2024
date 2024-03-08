@@ -41,24 +41,12 @@ public class RobotContainer {
     private final Pivot s_Pivot = new Pivot();
     private final Intater s_Intater = new Intater();
 
-    private final SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser("FrontAuto");
+    
+
+    private final SendableChooser<Command> autoChooser;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-        s_Swerve.setDefaultCommand(
-            new TeleopSwerve(
-                s_Swerve, 
-                () -> -mainController.getLeftY(),
-                () -> -mainController.getLeftX(),
-                () -> -mainController.getRightX(),
-                () -> false
-            )
-        );
-        s_Pivot.setDefaultCommand(new RepeatCommand(new PivotCommand(PivotMode.DEFAULT, s_Pivot)));
-
-        // Configure the button bindings
-        configureButtonBindings();
-
         NamedCommands.registerCommand("Intake",Commands.sequence(
                 new PivotCommand(PivotMode.GROUND_INTAKE, s_Pivot),
                 new IntaterCommand(IntaterMode.INTAKE, s_Intater)
@@ -72,6 +60,22 @@ public class RobotContainer {
                 Commands.waitSeconds(5)
             )
         );
+
+        autoChooser = AutoBuilder.buildAutoChooser("FrontAuto");
+
+        s_Swerve.setDefaultCommand(
+            new TeleopSwerve(
+                s_Swerve, 
+                () -> -mainController.getLeftY(),
+                () -> -mainController.getLeftX(),
+                () -> -mainController.getRightX(),
+                mainController.square()
+            )
+        );
+        s_Pivot.setDefaultCommand(new RepeatCommand(new PivotCommand(PivotMode.DEFAULT, s_Pivot)));
+
+        // Configure the button bindings
+        configureButtonBindings();
 
         SmartDashboard.putData(autoChooser);
     }
@@ -114,16 +118,22 @@ public class RobotContainer {
 
         mainController.povUp().whileTrue(
             Commands.sequence(
-                new PivotCommand(PivotMode.GROUND_INTAKE, s_Pivot),
                 new IntaterCommand(IntaterMode.INTAKE, s_Intater)
             )
         );
 
         mainController.povDown().whileTrue(
             Commands.sequence(
-                new PivotCommand(PivotMode.GROUND_INTAKE, s_Pivot),
                 new IntaterCommand(IntaterMode.OUTTAKE, s_Intater)
             )
+        );
+
+        mainController.circle().whileTrue(
+            new PivotCommand(PivotMode.GROUND_INTAKE, s_Pivot)
+        );
+
+        mainController.cross().whileTrue(
+            new PivotCommand(PivotMode.AMP, s_Pivot)
         );
         
         

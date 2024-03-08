@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.1499478305850421,
-      "y": 6.456779913704504
+      "x": 1.1600292566362045,
+      "y": 6.581851764759665
     },
-    "rotation": 0
+    "rotation": 56.11688711549265
   },
   "command": {
     "type": "sequential",
@@ -28,7 +28,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Center Part 1"
+                        "pathName": "AmpSide Part 1"
                       }
                     },
                     {
@@ -52,7 +52,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Part 2 Center"
+            "pathName": "AmpSide Part 2"
           }
         },
         {

@@ -47,7 +47,7 @@ public class IntaterCommand extends Command {
 
       case AMPINTAKE:
         m_commandToRun = new InstantCommand(() -> s_Intater.setIntakeSpeedDutyCycle(Constants.IntaterConstants.IntakeVelDutyCycle))
-        .alongWith(new InstantCommand(() -> s_Intater.setBothSpeedRPS(IntaterConstants.ShooterCounteractingRPS*10)))
+        .alongWith(new InstantCommand(() -> s_Intater.setBothSpeedRPS(50)))
         .alongWith(Commands.waitUntil(() -> false));
         break;
       case INTAKE:

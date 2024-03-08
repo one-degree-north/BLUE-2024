@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.1499478305850421,
-      "y": 6.456779913704504
+      "x": 1.0788828237631882,
+      "y": 4.51905606013903
     },
-    "rotation": 0
+    "rotation": -57.72152302460186
   },
   "command": {
     "type": "sequential",
@@ -28,7 +28,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Center Part 1"
+                        "pathName": "SourceSide Part 1"
                       }
                     },
                     {
@@ -52,7 +52,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Part 2 Center"
+            "pathName": "SourceSide Part 2"
           }
         },
         {

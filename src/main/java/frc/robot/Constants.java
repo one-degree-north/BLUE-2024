@@ -39,7 +39,7 @@ public final class Constants {
         public static final double flywheelGearRatio = 1.0/4.25;
 
         //POSITIOSN
-        public static final double SpeakerVelRPS = 18000.0/60;
+        public static final double SpeakerVelRPS = 16000.0/60;
         public static final double AmpVelRPS = -1000/60;
         public static final double OuttakeVelDutyCycle = -0.6;
         public static final double IntakeVelDutyCycle = 0.7;
@@ -72,7 +72,7 @@ public final class Constants {
         public static final double DefaultPosition = 0.18;
         public static final double AmpPosition = 0.12;
         public static final double GroundIntakePosition = -0.13;
-        public static final double SourceIntakePosition = 0.12;
+        public static final double SourceIntakePosition = 0.18;
         public static final double LevelPosition = 0;
     }
 

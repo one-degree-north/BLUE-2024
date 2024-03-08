@@ -35,12 +35,12 @@ public class Intater extends SubsystemBase {
 
     //NEO 500 Configs
     m_flywheelLeft.restoreFactoryDefaults();
-    m_flywheelLeft.setSmartCurrentLimit(60);
+    m_flywheelLeft.setSmartCurrentLimit(40);
     m_flywheelLeft.setInverted(true);
     m_flywheelLeft.setIdleMode(IdleMode.kCoast);
 
     m_flywheelRight.restoreFactoryDefaults();
-    m_flywheelRight.setSmartCurrentLimit(60);
+    m_flywheelRight.setSmartCurrentLimit(40);
     m_flywheelRight.setInverted(false);
     m_flywheelRight.setIdleMode(IdleMode.kCoast);
     
