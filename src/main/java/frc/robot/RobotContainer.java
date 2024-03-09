@@ -41,7 +41,7 @@ public class RobotContainer {
     private final Pivot s_Pivot = new Pivot();
     private final Intater s_Intater = new Intater();
 
-    
+    private boolean isRobotCentric;
 
     private final SendableChooser<Command> autoChooser;
 
@@ -61,7 +61,19 @@ public class RobotContainer {
             )
         );
 
+        isRobotCentric = false;
+
         autoChooser = AutoBuilder.buildAutoChooser("FrontAuto");
+
+        // s_Swerve.setDefaultCommand(
+        //     new TeleopSwerve(
+        //         s_Swerve, 
+        //         () -> -mainController.getLeftY(),
+        //         () -> -mainController.getLeftX(),
+        //         () -> -mainController.getRightX(),
+        //         mainController.square()
+        //     )
+        // );
 
         s_Swerve.setDefaultCommand(
             new TeleopSwerve(
@@ -69,9 +81,10 @@ public class RobotContainer {
                 () -> -mainController.getLeftY(),
                 () -> -mainController.getLeftX(),
                 () -> -mainController.getRightX(),
-                mainController.square()
+                () -> isRobotCentric
             )
         );
+
         s_Pivot.setDefaultCommand(new RepeatCommand(new PivotCommand(PivotMode.DEFAULT, s_Pivot)));
 
         // Configure the button bindings
@@ -141,7 +154,7 @@ public class RobotContainer {
         /* Driver Buttons */
         mainController.triangle().onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
 
-        //mainController.square().onTrue(new InstantCommand(() -> ));
+        mainController.square().onTrue(new InstantCommand(() -> isRobotCentric = !isRobotCentric));
 
         
     }
